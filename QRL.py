@@ -1,5 +1,5 @@
 import numpy as np
-import tictactoe
+import tictactoeRL
 import random
 
 total_episodes = 20000        # Total episodes
