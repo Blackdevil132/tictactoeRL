@@ -4,20 +4,22 @@ import tictactoeRL
 import pickle
 import random
 
-#total_episodes = 500000        # Total episodes
-#learning_rate = 0.8           # Learning rate
-max_steps = 99                # Max steps per episode
-#gamma = 0.95                  # Discounting rate
+# total_episodes = 500000        # Total episodes
+# learning_rate = 0.8           # Learning rate
+max_steps = 99  # Max steps per episode
+# gamma = 0.95                  # Discounting rate
 
 # Exploration parameters
-epsilon = 1.0                 # Exploration rate
-max_epsilon = 1.0             # Exploration probability at start
-min_epsilon = 0.01            # Minimum exploration probability
-#decay_rate = 0.004             # Exponential decay rate for exploration prob
+epsilon = 1.0  # Exploration rate
+max_epsilon = 1.0  # Exploration probability at start
+min_epsilon = 0.01  # Minimum exploration probability
+
+
+# decay_rate = 0.004             # Exponential decay rate for exploration prob
 
 
 class QRL:
-    def __init__(self, total_episodes, learning_rate, gamma, decay_rate):
+    def __init__(self, total_episodes, learning_rate, gamma, decay_rate, rewards=(10, -100, 5)):
         self.total_episodes = total_episodes
         self.learning_rate = learning_rate
         self.max_steps = max_steps
@@ -31,15 +33,16 @@ class QRL:
         self.observation_space = 19683
 
         self.qtable = {}
+        self.rewards = rewards
 
         self.iteration = 0
 
     def statusBar(self):
         bar_len = 60
-        filled_len = int(round(bar_len*self.iteration/self.total_episodes))
-        percents = round(100.0 *self.iteration/float(self.total_episodes),1)
-        bar = '='*filled_len+'-'*(bar_len-filled_len)
-        sys.stdout.write('\r[%s] %s%%\n' %(bar,percents))
+        filled_len = int(round(bar_len * self.iteration / self.total_episodes))
+        percents = round(100.0 * self.iteration / float(self.total_episodes), 1)
+        bar = '=' * filled_len + '-' * (bar_len - filled_len)
+        sys.stdout.write('\r[%s] %s%%' % (bar, percents))
         sys.stdout.flush()
 
     def saveToFile(self, path="qtable"):
@@ -48,8 +51,7 @@ class QRL:
 
     def learn(self):
         # List of rewards
-        rewards = []
-        env = tictactoeRL.Game()
+        env = tictactoeRL.Game(self.rewards)
 
         for episode in range(self.total_episodes):
             self.iteration = episode
@@ -93,10 +95,9 @@ class QRL:
 
             # Reduce epsilon
             self.epsilon = self.min_epsilon + (self.max_epsilon - self.min_epsilon) * np.exp(-self.decay_rate * episode)
-            rewards.append(total_rewards)
 
     def test(self):
-        env = tictactoeRL.Game()
+        env = tictactoeRL.Game(self.rewards)
         wins = 0
         draws = 0
         losses = 0
@@ -106,9 +107,9 @@ class QRL:
             env.reset()
             steps = env.run(self.qtable, self.epsilon)
             reward = steps[-1][3]
-            if reward == 10:
+            if reward == self.rewards[0]:
                 wins += 1
-            elif reward == -10:
+            elif reward == self.rewards[1]:
                 losses += 1
             else:
                 draws += 1

@@ -12,6 +12,7 @@ alg = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sy
 alg.learn()
 alg.saveToFile()
 
+print()
 print(alg.qtable[(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')])
 
 wins, draws, losses = alg.test()

@@ -63,6 +63,7 @@ class Game:
                 field = int(input('This field does not exist or is already set. Choose another: '))
         else:
             try:
+                print(self.qtable[tuple(self.board)][:])
                 field = np.argmax(self.qtable[tuple(self.board)][:])
                 if field not in self.fields:
                     field = choice(self.fields)

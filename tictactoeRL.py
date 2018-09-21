@@ -13,7 +13,7 @@ def drawBoard(board):
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, rewards):
         # the boarddata
         self.board = [' ' for i in range(9)]
         # the leftover fields
@@ -21,6 +21,7 @@ class Game:
         self.players = [Player("Bot 1", 'O'), Player('Bot 2', 'X')]
         # to determine who starts and which player is active
         self.activePlayer = random.choice([True, False])
+        self.rewards = rewards
 
     def reset(self):
         # the boarddata
@@ -125,13 +126,14 @@ class Game:
             # determine the winner
             if winner >= 0:
                 if winner == 0:
-                    steps[-1][3] = 10
+                    steps[-1][3] = self.rewards[0]
                     return steps
                 else:
-                    steps[-1][3] = -10
+                    steps[-1][3] = self.rewards[1]
                     return steps
             # check for draw
             if len(self.fields) == 0:
+                steps[-1][3] = self.rewards[2]
                 return steps
 
 
