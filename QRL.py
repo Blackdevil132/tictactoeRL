@@ -2,8 +2,8 @@ import numpy as np
 import tictactoeRL
 import random
 
-#total_episodes = 20000        # Total episodes
-#earning_rate = 0.8           # Learning rate
+#total_episodes = 500000        # Total episodes
+#learning_rate = 0.8           # Learning rate
 max_steps = 99                # Max steps per episode
 #gamma = 0.95                  # Discounting rate
 
@@ -11,11 +11,11 @@ max_steps = 99                # Max steps per episode
 epsilon = 1.0                 # Exploration rate
 max_epsilon = 1.0             # Exploration probability at start
 min_epsilon = 0.01            # Minimum exploration probability
-#decay_rate = 0.005             # Exponential decay rate for exploration prob
+#decay_rate = 0.004             # Exponential decay rate for exploration prob
 
 
 class QRL:
-    def __init__(self,total_episodes,learning_rate,gamma,decay_rate):
+    def __init__(self, total_episodes, learning_rate, gamma, decay_rate):
         self.total_episodes = total_episodes
         self.learning_rate = learning_rate
         self.max_steps = max_steps
@@ -40,19 +40,37 @@ class QRL:
             env.reset()
             total_rewards = 0
 
-            steps, reward = env.run(self.qtable, self.epsilon)
+            steps = env.run(self.qtable, self.epsilon)
+            #print(steps)
+            #print("\n")
             for step in steps:
-                state, action, new_state = step
+                state, action, new_state, reward = step
 
-                # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
-                # qtable[new_state,:] : all the actions we can take from new state
                 if state not in self.qtable:
                     self.qtable[state] = np.zeros(self.action_space)
                 if new_state not in self.qtable:
                     self.qtable[new_state] = np.zeros(self.action_space)
 
+                # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
+                # qtable[new_state,:] : all the actions we can take from new state
+                pos_rewards = [0]
+                for i in range(9):
+                    if new_state[i] == ' ':
+                        new_new_state = list(new_state)
+                        new_new_state[i] = 'X'
+                        new_new_state = tuple(new_new_state)
+                        try:
+                            pos_rewards.append(np.max(self.qtable[new_new_state][:]))
+                        except KeyError:
+                            pos_rewards.append(0)
+                try:
+                    future_reward = np.max(pos_rewards)
+                except ValueError:
+                    print(pos_rewards)
+                    raise RuntimeError
+
                 self.qtable[state][action] = self.qtable[state][action] + self.learning_rate * (
-                        reward + self.discount_rate * np.max(self.qtable[new_state][:]) - self.qtable[state][action])
+                        reward + self.discount_rate * future_reward - self.qtable[state][action])
 
                 total_rewards += reward
 
@@ -69,7 +87,8 @@ class QRL:
         for episode in range(1000):
             # Reset the environment
             env.reset()
-            steps, reward = env.run(self.qtable, self.epsilon)
+            steps = env.run(self.qtable, self.epsilon)
+            reward = steps[-1][3]
             if reward == 10:
                 wins += 1
             elif reward == -10:

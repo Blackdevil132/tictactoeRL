@@ -112,10 +112,11 @@ class Game:
     def run(self, qtable, epsilon):
         steps = []
         while True:
-            step = [tuple(self.board)]
+            step = [None, 0, None, 0]
+            step[0] = tuple(self.board)
             action = self.inputTurn(qtable, epsilon)
-            step.append(action)
-            step.append(tuple(self.board))
+            step[1] = action
+            step[2] = tuple(self.board)
             winner = self.checkWin()
 
             if self.activePlayer:
@@ -124,12 +125,14 @@ class Game:
             # determine the winner
             if winner >= 0:
                 if winner == 0:
-                    return steps, 10
+                    steps[-1][3] = 10
+                    return steps
                 else:
-                    return steps, -10
+                    steps[-1][3] = -10
+                    return steps
             # check for draw
             if len(self.fields) == 0:
-                return steps, 0
+                return steps
 
 
 class Player:
