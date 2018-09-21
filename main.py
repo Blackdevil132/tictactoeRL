@@ -1,6 +1,6 @@
 import sys
 import QRL
-import time, pickle
+import pickle
 import tictactoeTEST
 
 if len(sys.argv) < 5:
@@ -9,10 +9,8 @@ if len(sys.argv) < 5:
 
 alg = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
 
-start_time = time.time()
 alg.learn()
 alg.saveToFile()
-print(time.time() - start_time, "seconds")
 
 print(alg.qtable[(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')])
 

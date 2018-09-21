@@ -39,7 +39,7 @@ class QRL:
         filled_len = int(round(bar_len*self.iteration/self.total_episodes))
         percents = round(100.0 *self.iteration/float(self.total_episodes),1)
         bar = '='*filled_len+'-'*(bar_len-filled_len)
-        sys.stdout.write('\r[%s] %s%%' %(bar,percents))
+        sys.stdout.write('\r[%s] %s%%\n' %(bar,percents))
         sys.stdout.flush()
 
     def saveToFile(self, path="qtable"):
