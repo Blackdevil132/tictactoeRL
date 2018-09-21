@@ -33,7 +33,7 @@ class QRL:
     def learn(self):
         # List of rewards
         rewards = []
-        env = tictactoe.Game()
+        env = tictactoeRL.Game()
 
         for episode in range(self.total_episodes):
             # Reset the environment
@@ -61,7 +61,7 @@ class QRL:
             rewards.append(total_rewards)
 
     def test(self):
-        env = tictactoe.Game()
+        env = tictactoeRL.Game()
         wins = 0
         draws = 0
         losses = 0
