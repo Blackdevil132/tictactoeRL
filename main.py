@@ -1,6 +1,7 @@
 import sys
 import QRL
 import time, pickle
+import tictactoeTEST
 
 if len(sys.argv) < 5:
     print("Usage: " + sys.argv[0] + " total_runs learning_rate discount_rate decay_rate")
@@ -23,6 +24,11 @@ print("Draw: %s" % draws)
 print("Lost: %s" % losses)
 print("Losing Rate: %.2f%%" % lossrate)
 print("Win Rate: %.2f%%" % winrate)
+
+for i in range(10):
+    game_test = tictactoeTEST.Game(False, alg.qtable)
+    game_test.run()
+
 
 
 def loadFromFile(path):
