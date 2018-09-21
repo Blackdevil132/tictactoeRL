@@ -9,4 +9,11 @@ alg = QRL.QRL(int(sys.argv[1]),float(sys.argv[2]),float(sys.argv[3]),float(sys.a
 
 alg.learn()
 
-print(alg.test())
+wins,draws,losses = alg.test()
+lossrate = losses/1000*100
+winrate = wins/1000*100
+print("Won: %s" %wins)
+print("Draw: %s" %draws)
+print("Lost: %s" %losses)
+print("Losing Rate: %s%%" %lossrate)
+print("Win Rate: %s%%" %winrate)
