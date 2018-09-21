@@ -1,5 +1,6 @@
 import numpy as np
 import tictactoeRL
+import pickle
 import random
 
 #total_episodes = 500000        # Total episodes
@@ -30,6 +31,10 @@ class QRL:
 
         self.qtable = {}
 
+    def saveToFile(self, path="qtable"):
+        with open(path + '.pkl', 'wb') as f:
+            pickle.dump(self.qtable, f, pickle.HIGHEST_PROTOCOL)
+
     def learn(self):
         # List of rewards
         rewards = []
@@ -41,8 +46,6 @@ class QRL:
             total_rewards = 0
 
             steps = env.run(self.qtable, self.epsilon)
-            #print(steps)
-            #print("\n")
             for step in steps:
                 state, action, new_state, reward = step
 
