@@ -52,7 +52,7 @@ class QRL:
     def learn(self):
         # List of rewards
         env = tictactoeRL.Game(self.rewards)
-        max_refresh = total_episodes/1000
+        max_refresh = self.total_episodes/1000
 
         for episode in range(self.total_episodes):
             self.iteration = episode
