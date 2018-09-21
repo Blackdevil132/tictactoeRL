@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 import tictactoeRL
 import pickle
@@ -31,6 +32,16 @@ class QRL:
 
         self.qtable = {}
 
+        self.iteration = 0
+
+    def statusBar(self):
+        bar_len = 60
+        filled_len = int(round(bar_len*self.iteration/self.total_episodes))
+        percents = round(100.0 *self.iteration/float(self.total_episodes),1)
+        bar = '='*filled_len+'-'*(bar_len-filled_len)
+        sys.stdout.write('\r[%s] %s%%' %(bar,percents))
+        sys.stdout.flush()
+
     def saveToFile(self, path="qtable"):
         with open(path + '.pkl', 'wb') as f:
             pickle.dump(self.qtable, f, pickle.HIGHEST_PROTOCOL)
@@ -41,6 +52,9 @@ class QRL:
         env = tictactoeRL.Game()
 
         for episode in range(self.total_episodes):
+            self.iteration = episode
+            self.statusBar()
+
             # Reset the environment
             env.reset()
             total_rewards = 0
