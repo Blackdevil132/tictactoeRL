@@ -2,20 +2,20 @@ import numpy as np
 import tictactoeRL
 import random
 
-total_episodes = 20000        # Total episodes
-learning_rate = 0.8           # Learning rate
+#total_episodes = 20000        # Total episodes
+#earning_rate = 0.8           # Learning rate
 max_steps = 99                # Max steps per episode
-gamma = 0.95                  # Discounting rate
+#gamma = 0.95                  # Discounting rate
 
 # Exploration parameters
 epsilon = 1.0                 # Exploration rate
 max_epsilon = 1.0             # Exploration probability at start
 min_epsilon = 0.01            # Minimum exploration probability
-decay_rate = 0.005             # Exponential decay rate for exploration prob
+#decay_rate = 0.005             # Exponential decay rate for exploration prob
 
 
 class QRL:
-    def __init__(self, action_space, observation_space):
+    def __init__(self,total_episodes,learning_rate,gamma,decay_rate):
         self.total_episodes = total_episodes
         self.learning_rate = learning_rate
         self.max_steps = max_steps
@@ -25,8 +25,8 @@ class QRL:
         self.min_epsilon = min_epsilon
         self.decay_rate = decay_rate
 
-        self.action_space = action_space
-        self.observation_space = observation_space
+        self.action_space = 9
+        self.observation_space = 19683
 
         self.qtable = {}
 
