@@ -27,36 +27,50 @@ class Game:
 
         self.players = [Player("Bot 1", 1), Player('Bot 2', -1)]
         # to determine who starts and which player is active
-        self.activePlayer = random.choice([True, False])
+        self.activePlayer = 0
         self.rewards = rewards
 
     def reset(self):
         self.board = [0 for i in range(9)]
         self.fields = [i for i in range(9)]
 
-        self.activePlayer = random.choice([True, False])
+        self.activePlayer = 0
 
         return self.board
 
+    def invertBoard(self):
+        for i in range(9):
+            self.board[i] *= -1
+
     def inputTurn(self, qtable, epsilon):
-        if self.activePlayer == 0:
-            exp_exp_tradeoff = random.uniform(0, 1)
+        exp_exp_tradeoff = random.uniform(0, 1)
 
-            if exp_exp_tradeoff > epsilon:
-                try:
-                    action = np.argmax(qtable[tuple(self.board)][:])
-                    if action not in self.fields:
-                        action = random.choice(self.fields)
-                except KeyError:
+        try:
+            print(qtable[tuple(self.board)][:])
+        except KeyError:
+            print("new state")
+
+        if exp_exp_tradeoff > epsilon:
+            print("trying to exploit...")
+            try:
+                action = np.argmax(qtable[tuple(self.board)][:])
+                print("choosing action %i" % action)
+                if action not in self.fields:
+                    print("action not possible")
                     action = random.choice(self.fields)
-
-            else:
+                    print("choose random action %i" % action)
+            except KeyError:
+                print("state unknown")
                 action = random.choice(self.fields)
+                print("choose random action %i" % action)
+
         else:
+            print("trying to explore...")
             action = random.choice(self.fields)
+            print("choose random action %i" % action)
 
         self.fields.remove(action)
-        self.board[action] = self.players[self.activePlayer].char
+        self.board[action] = 1
         self.activePlayer = not self.activePlayer
         return action
 
@@ -118,8 +132,11 @@ class Game:
             return -2
 
     def run(self, qtable, epsilon):
+        print("\n=== New Game ===")
         steps = []
         while True:
+            print("Player %i turn: " % self.activePlayer)
+            print(self.board)
             step = [None, 0, None, 0]
             step[0] = tuple(self.board)
             action = self.inputTurn(qtable, epsilon)
@@ -127,29 +144,26 @@ class Game:
             step[2] = tuple(self.board)
             winner = self.checkWin()
 
-            if self.activePlayer:
-                steps.append(step)
+            steps.append(step)
 
             # determine the winner
             if winner >= 0:
-                if winner == 0:
-                    steps[-1][3] = self.rewards[0]
-                    return steps
-                else:
-                    steps[-1][3] = self.rewards[1]
-                    return steps
+                print(self.board)
+                print("The Winner is %i" % winner)
+                steps[-1][3] = self.rewards[0]
+                steps[-2][3] = self.rewards[1]
+                return steps
             # check for draw
             if len(self.fields) == 0:
+                print("Its a draw")
                 steps[-1][3] = self.rewards[2]
+                steps[-2][3] = self.rewards[2]
                 return steps
+
+            self.invertBoard()
 
 
 class Player:
     def __init__(self, inputName, inputChar):
         self.name = inputName
         self.char = inputChar
-
-
-#game = Game()
-#print(game.run({}, 0.5))
-#drawBoard(game.board)

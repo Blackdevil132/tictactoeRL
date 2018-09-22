@@ -15,6 +15,7 @@ alg.saveToFile()
 print()
 print(alg.qtable[(0, 0, 0, 0, 0, 0, 0, 0, 0)])
 
+
 wins, draws, losses = alg.test()
 lossrate = losses / 1000 * 100
 winrate = wins / 1000 * 100

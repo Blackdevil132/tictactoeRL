@@ -51,6 +51,7 @@ class QRL:
 
     def learn(self):
         # List of rewards
+        print("learning tictactoe")
         env = tictactoeRL.Game(self.rewards)
         max_refresh = self.total_episodes/1000
 
@@ -65,33 +66,50 @@ class QRL:
 
             steps = env.run(self.qtable, self.epsilon)
             for step in steps:
+                print(step)
+
+            print("\n=== LEARNING ===\n")
+
+            for step in reversed(steps):
+                print("learning from step...")
+                print(step)
                 state, action, new_state, reward = step
 
                 if state not in self.qtable:
+                    print("state new. add to table")
                     self.qtable[state] = np.zeros(self.action_space)
                 if new_state not in self.qtable:
+                    print("new_state new. add to table")
                     self.qtable[new_state] = np.zeros(self.action_space)
 
                 # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
                 # qtable[new_state,:] : all the actions we can take from new state
                 pos_rewards = [0]
+                print("possible next states")
                 for i in range(9):
                     if new_state[i] == 0:
                         new_new_state = list(new_state)
                         new_new_state[i] = -1
                         new_new_state = tuple(new_new_state)
+
+                        print(new_new_state)
+
                         try:
+                            print(self.qtable[new_new_state][:])
                             pos_rewards.append(np.max(self.qtable[new_new_state][:]))
                         except KeyError:
+                            print("0")
                             pos_rewards.append(0)
-                try:
-                    future_reward = np.max(pos_rewards)
-                except ValueError:
-                    print(pos_rewards)
-                    raise RuntimeError
+
+                future_reward = np.max(pos_rewards)
+                print("Maximum Future Reward: %.2f" % future_reward)
+                print("Current Value for action: %.2f" % self.qtable[state][action])
 
                 self.qtable[state][action] = self.qtable[state][action] + self.learning_rate * (
                         reward + self.discount_rate * future_reward - self.qtable[state][action])
+
+
+                print("Updated Value for action: %.2f" % self.qtable[state][action])
 
                 total_rewards += reward
 

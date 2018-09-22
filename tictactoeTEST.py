@@ -134,7 +134,7 @@ class Game:
             return 0
 
     def run(self):
-        clear()
+        #clear()
         # the game loop
         while True:
             clear()
@@ -146,18 +146,18 @@ class Game:
             winner = self.checkWin()
             # determine the winner
             if winner == self.human:
-                clear()
+                #clear()
                 self.drawBoard(self.board)
                 print(self.human.name + ' has won the game!')
                 break
             elif winner == self.com:
-                clear()
+                #clear()
                 self.drawBoard(self.board)
                 print(self.com.name + ' has won the game!')
                 break
             # check for draw
             if len(self.fields) == 0:
-                clear()
+                #clear()
                 self.drawBoard(self.board)
                 print('The game is a draw!')
                 break
