@@ -51,6 +51,13 @@ class Game:
         print('# ' + board[6] + ' # ' + board[7] + ' # ' + board[8] + ' #')
         print('#' * 13)
 
+    def reset(self):
+        if input("Play again?(y/n)") == 'y':
+            self.comTurn = choice([True, False])
+            self.board = [' ' for i in range(9)]
+            self.fields = [i for i in range(9)]
+            self.run()
+
     def initializePlayers(self):
         inputName = input('Insert your name: ')
         self.human = Player(inputName, 'X')
@@ -149,6 +156,8 @@ class Game:
                 self.drawBoard(self.board)
                 print('The game is a draw!')
                 break
+
+        self.reset()
 
 
 class Player:
