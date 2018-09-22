@@ -76,9 +76,9 @@ class QRL:
                 # qtable[new_state,:] : all the actions we can take from new state
                 pos_rewards = [0]
                 for i in range(9):
-                    if new_state[i] == ' ':
+                    if new_state[i] == 0:
                         new_new_state = list(new_state)
-                        new_new_state[i] = 'X'
+                        new_new_state[i] = -1
                         new_new_state = tuple(new_new_state)
                         try:
                             pos_rewards.append(np.max(self.qtable[new_new_state][:]))

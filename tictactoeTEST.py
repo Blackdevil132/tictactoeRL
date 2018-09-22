@@ -2,6 +2,7 @@ from os import system, name
 from random import choice
 import numpy as np
 
+convertSymbols = {1: 'O', -1: 'X', 0: ' '}
 
 # self defined console clear
 def clear():
@@ -35,33 +36,38 @@ class Game:
         if num:
             self.board = [str(i) for i in range(9)]
         else:
-            self.board = [' ' for i in range(9)]
+            self.board = [0 for i in range(9)]
         # the leftover fields
         self.fields = [i for i in range(9)]
         # to determine who starts and which player is active
         self.comTurn = choice([True, False])
         self.qtable = qtable
 
+        self.initializePlayers()
+
     def drawBoard(self, board):
+        board_str = ['' for i in range(9)]
+        for i in range(9):
+            board_str[i] = convertSymbols[board[i]]
         print('#' * 13)
-        print('# ' + board[0] + ' # ' + board[1] + ' # ' + board[2] + ' #')
+        print('# ' + board_str[0] + ' # ' + board_str[1] + ' # ' + board_str[2] + ' #')
         print('#' * 13)
-        print('# ' + board[3] + ' # ' + board[4] + ' # ' + board[5] + ' #')
+        print('# ' + board_str[3] + ' # ' + board_str[4] + ' # ' + board_str[5] + ' #')
         print('#' * 13)
-        print('# ' + board[6] + ' # ' + board[7] + ' # ' + board[8] + ' #')
+        print('# ' + board_str[6] + ' # ' + board_str[7] + ' # ' + board_str[8] + ' #')
         print('#' * 13)
 
     def reset(self):
         if input("Play again?(y/n)") == 'y':
             self.comTurn = choice([True, False])
-            self.board = [' ' for i in range(9)]
+            self.board = [0 for i in range(9)]
             self.fields = [i for i in range(9)]
             self.run()
 
     def initializePlayers(self):
         inputName = input('Insert your name: ')
-        self.human = Player(inputName, 'X')
-        self.com = Player('Computer', 'O')
+        self.human = Player(inputName, -1)
+        self.com = Player('Computer', 1)
 
     def inputTurn(self, player):
         if not self.comTurn:
@@ -129,7 +135,6 @@ class Game:
 
     def run(self):
         clear()
-        self.initializePlayers()
         # the game loop
         while True:
             clear()

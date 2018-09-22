@@ -14,21 +14,28 @@ def drawBoard(board):
 
 class Game:
     def __init__(self, rewards):
-        # the boarddata
-        self.board = [' ' for i in range(9)]
-        # the leftover fields
+        """
+        self.board = []
+        self.fields = []
+        for i in range(9):
+            self.board.append(0)
+            self.fields.append(i)
+        """
+
+        self.board = [0 for i in range(9)]
         self.fields = [i for i in range(9)]
-        self.players = [Player("Bot 1", 'O'), Player('Bot 2', 'X')]
+
+        self.players = [Player("Bot 1", 1), Player('Bot 2', -1)]
         # to determine who starts and which player is active
         self.activePlayer = random.choice([True, False])
         self.rewards = rewards
 
     def reset(self):
-        # the boarddata
-        self.board = [' ' for i in range(9)]
-        # the leftover fields
+        self.board = [0 for i in range(9)]
         self.fields = [i for i in range(9)]
+
         self.activePlayer = random.choice([True, False])
+
         return self.board
 
     def inputTurn(self, qtable, epsilon):
