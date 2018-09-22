@@ -45,29 +45,24 @@ class Game:
     def inputTurn(self, qtable, epsilon):
         exp_exp_tradeoff = random.uniform(0, 1)
 
-        try:
-            print(qtable[tuple(self.board)][:])
-        except KeyError:
-            print("new state")
-
-        if exp_exp_tradeoff > epsilon:
-            print("trying to exploit...")
+        if exp_exp_tradeoff > epsilon[self.activePlayer]:
+            #print("trying to exploit...")
             try:
                 action = np.argmax(qtable[tuple(self.board)][:])
-                print("choosing action %i" % action)
+                #print("choosing action %i" % action)
                 if action not in self.fields:
-                    print("action not possible")
+                    #print("action not possible")
                     action = random.choice(self.fields)
-                    print("choose random action %i" % action)
+                    #print("choose random action %i" % action)
             except KeyError:
-                print("state unknown")
+                #print("state unknown")
                 action = random.choice(self.fields)
-                print("choose random action %i" % action)
+                #print("choose random action %i" % action)
 
         else:
-            print("trying to explore...")
+            #print("trying to explore...")
             action = random.choice(self.fields)
-            print("choose random action %i" % action)
+            #print("choose random action %i" % action)
 
         self.fields.remove(action)
         self.board[action] = 1
@@ -132,11 +127,11 @@ class Game:
             return -2
 
     def run(self, qtable, epsilon):
-        print("\n=== New Game ===")
+        #print("\n=== New Game ===")
         steps = []
         while True:
-            print("Player %i turn: " % self.activePlayer)
-            print(self.board)
+            #print("Player %i turn: " % self.activePlayer)
+            #print(self.board)
             step = [None, 0, None, 0]
             step[0] = tuple(self.board)
             action = self.inputTurn(qtable, epsilon)
@@ -148,14 +143,14 @@ class Game:
 
             # determine the winner
             if winner >= 0:
-                print(self.board)
-                print("The Winner is %i" % winner)
+                #print(self.board)
+                #print("The Winner is %i" % winner)
                 steps[-1][3] = self.rewards[0]
                 steps[-2][3] = self.rewards[1]
                 return steps
             # check for draw
             if len(self.fields) == 0:
-                print("Its a draw")
+                #print("Its a draw")
                 steps[-1][3] = self.rewards[2]
                 steps[-2][3] = self.rewards[2]
                 return steps

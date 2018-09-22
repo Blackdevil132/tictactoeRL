@@ -4,10 +4,10 @@ import pickle
 import tictactoeTEST
 
 if len(sys.argv) < 5:
-    print("Usage: " + sys.argv[0] + " total_runs learning_rate discount_rate decay_rate")
+    print("Usage: " + sys.argv[0] + " total_runs learning_rate discount_rate decay_rate1 decay_rate2")
     exit(0)
 
-alg = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
+alg = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]))
 
 alg.learn()
 alg.saveToFile()
