@@ -19,7 +19,7 @@ min_epsilon = 0.01  # Minimum exploration probability
 
 
 class QRL:
-    def __init__(self, total_episodes, learning_rate, gamma, decay_rate1, decay_rate2, rewards=(5, -100, 10)):
+    def __init__(self, total_episodes, learning_rate, gamma, decay_rate1, decay_rate2, rewards=(10, -100, 5)):
         self.total_episodes = total_episodes
         self.learning_rate = learning_rate
         self.max_steps = max_steps
