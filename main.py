@@ -24,10 +24,10 @@ print("Lost: %s" % losses)
 print("Losing Rate: %.2f%%" % lossrate)
 print("Win Rate: %.2f%%" % winrate)
 
-for i in range(10):
+
+if input("Do you want to play? (y/n)") == 'y':
     game_test = tictactoeTEST.Game(False, alg.qtable)
     game_test.run()
-
 
 
 def loadFromFile(path):
