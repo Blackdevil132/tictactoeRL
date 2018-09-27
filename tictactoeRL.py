@@ -42,15 +42,13 @@ class Game:
         for i in range(9):
             self.board[i] *= -1
 
-    def inputTurn(self, qtable, epsilon):
+    def inputTurn(self, epsilon):
         exp_exp_tradeoff = random.uniform(0, 1)
 
         if exp_exp_tradeoff > epsilon[self.activePlayer]:
             #print("trying to exploit...")
             try:
-                table_entry = qtable[tuple(self.board)][:]
-                action = np.where(table_entry == np.max(table_entry))[0]
-                action = random.choice(action)
+                action = self.players[self.activePlayer].takeTurn(tuple(self.board))
                 #print("choosing action %i" % action)
                 if action not in self.fields:
                     #print("action not possible")
@@ -125,10 +123,12 @@ class Game:
             return 0
         elif self.board[i] == self.players[1].char:
             return 1
-        else:
-            return -2
+
+        return -2
 
     def run(self, qtable, epsilon):
+        self.players[0].setQTable(qtable)
+        self.players[1].setQTable(qtable)
         #print("\n=== New Game ===")
         steps = []
         while True:
@@ -136,22 +136,24 @@ class Game:
             #print(self.board)
             step = [None, 0, None, 0]
             step[0] = tuple(self.board)
-            action = self.inputTurn(qtable, epsilon)
+            action = self.inputTurn(epsilon)
             step[1] = action
             step[2] = tuple(self.board)
-            winner = self.checkWin()
 
             steps.append(step)
 
+            winner = self.checkWin()
             # determine the winner
             if winner >= 0:
                 #print(self.board)
                 #print("The Winner is %i" % winner)
                 steps[-1][3] = self.rewards[0]
                 steps[-2][3] = self.rewards[1]
+
                 return steps
             # check for draw
             if len(self.fields) == 0:
+                #print(self.board)
                 #print("Its a draw")
                 steps[-1][3] = self.rewards[2]
                 steps[-2][3] = self.rewards[2]
@@ -161,6 +163,15 @@ class Game:
 
 
 class Player:
-    def __init__(self, inputName, inputChar):
+    def __init__(self, inputName, inputChar, qtable={}):
         self.name = inputName
         self.char = inputChar
+        self.qtable = qtable
+
+    def setQTable(self, qtable):
+        self.qtable = qtable
+
+    def takeTurn(self, state):
+        options = self.qtable[state][:]
+        actions = np.where(options == np.max(options))[0]
+        return random.choice(actions)

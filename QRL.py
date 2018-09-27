@@ -12,14 +12,14 @@ max_steps = 99  # Max steps per episode
 # Exploration parameters
 epsilon = 1.0  # Exploration rate
 max_epsilon = 1.0  # Exploration probability at start
-min_epsilon = 0.01  # Minimum exploration probability
+min_epsilon = 0.1  # Minimum exploration probability
 
 
 # decay_rate = 0.004             # Exponential decay rate for exploration prob
 
 
 class QRL:
-    def __init__(self, total_episodes, learning_rate, gamma, decay_rate1, decay_rate2, rewards=(10, -100, 5)):
+    def __init__(self, total_episodes, learning_rate, gamma, decay_rate1, decay_rate2, rewards=(20, -10, 10)):
         self.total_episodes = total_episodes
         self.learning_rate = learning_rate
         self.max_steps = max_steps
@@ -71,7 +71,7 @@ class QRL:
 
             #print("\n=== LEARNING ===\n")
 
-            for step in reversed(steps):
+            for step in steps:
                 #print("learning from step...")
                 #print(step)
                 state, action, new_state, reward = step
@@ -85,36 +85,42 @@ class QRL:
 
                 # Update Q(s,a):= Q(s,a) + lr [R(s,a) + gamma * max Q(s',a') - Q(s,a)]
                 # qtable[new_state,:] : all the actions we can take from new state
-                pos_rewards = [0]
-                #print("possible next states")
-                for i in range(9):
-                    if new_state[i] == 0:
-                        new_new_state = list(new_state)
-                        new_new_state[i] = -1
-                        new_new_state = tuple(new_new_state)
 
-                        #print(new_new_state)
+                if reward != 0:
+                    self.qtable[state][action] = reward
+                else:
+                    pos_rewards = [0]
+                    #print("possible next states")
+                    for i in range(9):
+                        if new_state[i] == 0:
+                            new_new_state = list(new_state)
+                            new_new_state[i] = -1
+                            new_new_state = tuple(new_new_state)
 
-                        try:
-                            #print(self.qtable[new_new_state][:])
-                            pos_rewards.append(np.max(self.qtable[new_new_state][:]))
-                        except KeyError:
-                            #print("0")
-                            pos_rewards.append(0)
+                            #print(new_new_state)
 
-                future_reward = np.max(pos_rewards)
-                #print("Maximum Future Reward: %.2f" % future_reward)
-                #print("Current Value for action: %.2f" % self.qtable[state][action])
+                            try:
+                                #print(self.qtable[new_new_state][:])
+                                pos_rewards.append(np.max(self.qtable[new_new_state][:]))
+                            except KeyError:
+                                #print("0")
+                                pos_rewards.append(0)
 
-                self.qtable[state][action] = self.qtable[state][action] + self.learning_rate * (
-                        reward + self.discount_rate * future_reward - self.qtable[state][action])
+                    future_reward = np.max(pos_rewards)
+                    #print("Reward %i" % reward)
+                    #print("Maximum Future Reward: %.2f" % future_reward)
+                    #print("Current Value for action: %.2f" % self.qtable[state][action])
+                    #print(reward + self.discount_rate * future_reward - self.qtable[state][action])
 
+                    self.qtable[state][action] = self.qtable[state][action] + self.learning_rate * (
+                            reward + self.discount_rate * future_reward - self.qtable[state][action])
 
-                #print("Updated Value for action: %.2f" % self.qtable[state][action])
+                    #print("Updated Value for action: %.2f" % self.qtable[state][action])
 
                 total_rewards += reward
 
             # Reduce epsilon
+            #print(self.epsilon)
             self.epsilon[0] = self.min_epsilon + (self.max_epsilon - self.min_epsilon) * np.exp(-self.decay_rate1 * episode)
             self.epsilon[1] = self.min_epsilon + (self.max_epsilon - self.min_epsilon) * np.exp(-self.decay_rate2 * episode)
 

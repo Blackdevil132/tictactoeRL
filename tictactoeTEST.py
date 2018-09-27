@@ -1,8 +1,10 @@
 from os import system, name
 from random import choice
 import numpy as np
+from utility import getInvertedBoard
 
 convertSymbols = {1: 'O', -1: 'X', 0: ' '}
+
 
 # self defined console clear
 def clear():
@@ -71,6 +73,10 @@ class Game:
 
     def inputTurn(self, player):
         if not self.comTurn:
+            table_entry = self.qtable[tuple(getInvertedBoard(self.board))][:]
+            field = np.where(table_entry == np.max(table_entry))[0]
+            print(table_entry)
+            print(field)
             field = int(input('Choose a field: '))
             while field not in self.fields:
                 field = int(input('This field does not exist or is already set. Choose another: '))
@@ -137,7 +143,7 @@ class Game:
             return 0
 
     def run(self):
-        #clear()
+        # clear()
         # the game loop
         while True:
             clear()
@@ -149,18 +155,18 @@ class Game:
             winner = self.checkWin()
             # determine the winner
             if winner == self.human:
-                #clear()
+                # clear()
                 self.drawBoard(self.board)
                 print(self.human.name + ' has won the game!')
                 break
             elif winner == self.com:
-                #clear()
+                # clear()
                 self.drawBoard(self.board)
                 print(self.com.name + ' has won the game!')
                 break
             # check for draw
             if len(self.fields) == 0:
-                #clear()
+                # clear()
                 self.drawBoard(self.board)
                 print('The game is a draw!')
                 break

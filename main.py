@@ -13,7 +13,7 @@ alg.learn()
 alg.saveToFile()
 
 print()
-print(alg.qtable[(0, 0, 0, 0, 0, 0, 0, 0, 0)])
+print(alg.qtable[(-1, 0, 0, 0, 0, 0, 0, 0, 0)])
 
 
 wins, draws, losses = alg.test()
