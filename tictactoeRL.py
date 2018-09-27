@@ -48,7 +48,9 @@ class Game:
         if exp_exp_tradeoff > epsilon[self.activePlayer]:
             #print("trying to exploit...")
             try:
-                action = np.argmax(qtable[tuple(self.board)][:])
+                table_entry = qtable[tuple(self.board)][:]
+                action = np.where(table_entry == np.max(table_entry))[0]
+                action = random.choice(action)
                 #print("choosing action %i" % action)
                 if action not in self.fields:
                     #print("action not possible")

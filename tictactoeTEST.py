@@ -77,7 +77,10 @@ class Game:
         else:
             try:
                 print(self.qtable[tuple(self.board)][:])
-                field = np.argmax(self.qtable[tuple(self.board)][:])
+                table_entry = self.qtable[tuple(self.board)][:]
+                field = np.where(table_entry == np.max(table_entry))[0]
+                print(field)
+                field = choice(field)
                 if field not in self.fields:
                     field = choice(self.fields)
             except KeyError:
