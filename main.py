@@ -1,35 +1,19 @@
 import sys
 import QRL
-import pickle
-import tictactoeTEST
 
 if len(sys.argv) < 5:
     print("Usage: " + sys.argv[0] + " total_runs learning_rate discount_rate decay_rate")
     exit(0)
 
-alg = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]))
+qrl = QRL.QRL(int(sys.argv[1]), float(sys.argv[2]), float(sys.argv[3]), float(sys.argv[4]), (9, 19683))
 
-alg.learn()
-alg.saveToFile()
+qrl.run()
 
 print()
-print(alg.qtable[(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ')])
+print(qrl.qtable[(0, 0, 0, 0, 0, 0, 0, 0, 0)])
 
-wins, draws, losses = alg.test()
-lossrate = losses / 1000 * 100
-winrate = wins / 1000 * 100
+wins, losses, remis = qrl.getWLRs()
 print("Won: %s" % wins)
-print("Draw: %s" % draws)
+print("Draw: %s" % remis)
 print("Lost: %s" % losses)
-print("Losing Rate: %.2f%%" % lossrate)
-print("Win Rate: %.2f%%" % winrate)
 
-
-if input("Do you want to play? (y/n)") == 'y':
-    game_test = tictactoeTEST.Game(False, alg.qtable)
-    game_test.run()
-
-
-def loadFromFile(path):
-    with open(path + '.pkl', 'rb') as f:
-        return pickle.load(f)

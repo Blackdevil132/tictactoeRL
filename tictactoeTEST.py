@@ -3,6 +3,15 @@ from random import choice
 import numpy as np
 
 
+def invert(board):
+    inv = {'X': 'O', 'O': 'X', ' ': ' '}
+    nboard = [0,0,0,0,0,0,0,0,0]
+    for i in range(9):
+        nboard[i] = inv[board[i]]
+
+    return nboard
+
+
 # self defined console clear
 def clear():
     if name == 'nt':
@@ -58,6 +67,7 @@ class Game:
 
     def inputTurn(self, player):
         if not self.comTurn:
+            print(self.qtable[tuple(invert(self.board))][:])
             field = int(input('Choose a field: '))
             while field not in self.fields:
                 field = int(input('This field does not exist or is already set. Choose another: '))
